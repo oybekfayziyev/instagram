@@ -1,0 +1,61 @@
+----------------------------------------------
+
+Instagram Functionality:
+- Follow to user
+- Write a message
+- Post photos
+- Like photos
+- Leave Comment
+- Add Story
+- Tag People 
+
+-----------------------------------------------
+
+User:
+    user_id,
+    email,
+    username,
+    password,
+
+Posts:
+    ManyToOne with User 
+    image,
+    created_date,
+    description,
+    ManyToOne with Location    
+
+Likes:
+    ManyToMany with User 
+    OneToOne with Post 
+    created_date
+    updated_date
+
+Comment:
+    ManyToOne with User
+    ManyToOne with Posts
+    message 
+    post_date
+
+Location:
+    location_id
+    street_address,
+    Region,
+    country 
+
+Tag People:
+    ManyToMany with Users(include_self = False)
+    tag_id 
+
+Profile:
+    ManyToOne Relation with User 
+    ManyToMany with Posts
+    following = ManyToOne Following
+
+Followers:
+    user = ManyToMany with Users
+    followers = ManyToOne with User
+    
+Following:
+    user = ManyToMany with Users
+    followers = ManyToOne with User
+
