@@ -38,19 +38,53 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sites',
     'django.contrib.staticfiles',
+
+    # APPLICATIONS
     'location',
     'post',
     'comments',
     'followers',
+    'profiles',
+
+    # REST FRAMEWORK
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_registration',
     # authentication
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-       
+
+    
+           
 
 ]
+
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+     
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+   
+]
+
+REST_REGISTRATION = {
+    'REGISTER_VERIFICATION_ENABLED': False,
+    'RESET_PASSWORD_VERIFICATION_ENABLED': False,
+    'REGISTER_EMAIL_VERIFICATION_ENABLED': False,
+}
+
+# REST_REGISTRATION = {
+#     'REGISTER_VERIFICATION_URL': 'https://frontend-host/verify-user/',
+#     'RESET_PASSWORD_VERIFICATION_URL': 'https://frontend-host/reset-password/',
+#     'REGISTER_EMAIL_VERIFICATION_URL': 'https://frontend-host/verify-email/',
+
+#     'VERIFICATION_FROM_EMAIL': 'no-reply@example.com',
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,6 +114,15 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
@@ -91,6 +134,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
+    "CLASS": "profiles.tokens.RandomStringTokenGenerator"
 }
 
 
@@ -137,3 +184,51 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
 
 CRYPT_KEY = b'67auCuzL-QSAE8ktnoUB3-CRN-4OHDF_kKjwymNwLVk='
+
+
+PHONE_VERIFICATION = {
+    "BACKEND": "profiles.backends.twilio.TwilioBackend",
+    "OPTIONS": {
+        "SID": "AC0ee5e4e8f8c2c1f304e96db83ff0ef9a",
+        "SECRET": "2b7cf8e8e4ff66a7523e83b6595cab29",
+        "FROM": "998998062951",
+        "SANDBOX_TOKEN": "123456",
+    },
+    "TOKEN_LENGTH": 6,
+    "MESSAGE": "Welcome to {app}! Please use security code {security_code} to proceed.",
+    "APP_NAME": "Phone Verify",
+    "SECURITY_CODE_EXPIRATION_TIME": 3600,  # In seconds only
+    "VERIFY_SECURITY_CODE_ONLY_ONCE": False,  # If False, then a security code can be used multiple times for verification
+}
+
+
+
+# EMAIL CONFIGURATION
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'oybekfayziyev97@gmail.com'
+EMAIL_HOST_PASSWORD = 'gzrqslomtfjlvarb'
+DEFAULT_FROM_EMAIL = 'Python ecommerce <oybekfayziyev97@gmail.com>'
+
+EMAIL_SUBJECT = 'Pyhton Instagram Practise'
+EMAIL_MESSAGE = '''
+Hello from {link}
+<br/>
+<br/>
+<br/>
+You're receiving this e-mail because you or someone else has requested a password for your user account.
+It can be safely ignored if you did not request a password reset. Click the link below to reset your password.
+<br />
+<br/>
+<a href="http://localhost:8000/api/profile/reset-password/confirm/{link_token}/">localhost:8000/api/profile/reset-password/confirm/{link_token}/</a>
+<br />
+<br/>
+In case you forgot, your username is {username}.
+Thank you for using {link}!
+{link}
+
+
+'''

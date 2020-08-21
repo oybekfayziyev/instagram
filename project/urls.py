@@ -22,8 +22,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/post/', include('post.urls')),
     path('api/follow/', include('followers.urls')),
+    # path('accounts/', include('allauth.urls')),
+    path('api/profile/', include('profiles.urls')),
     
 ] 
+
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

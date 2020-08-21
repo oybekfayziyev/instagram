@@ -1,14 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User 
-from rest_framework.authtoken.models import Token
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.conf import settings
+
 from location.models import Location
 from .utils.core import upload_image_path, generate_slug
 
 # Create your models here.
 
+class PostExtraImage(models.Model):
+	title = models.CharField(max_length = 64, null=True,blank=True)
+	image = models.ImageField(upload_to = upload_image_path)
+	post = models.ForeignKey('Post', null=True,blank=True, on_delete=models.CASCADE, related_name='images')
+
+	class Meta:
+		verbose_name_plural = 'Images'
+        
 class Post(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -23,19 +28,3 @@ class Post(models.Model):
     def __str__(self):
         return self.user.username
 
-class Profile(models.Model):
-
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=256)
-    last_name = models.CharField(max_length=256)
-    bio = models.CharField(max_length=256)
-    profile_pic = models.ImageField(upload_to=upload_image_path,blank=True,null=True)
-
-    def __str__(self):
-        return self.user.username
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    print('token',Token)
-    if created:
-        Token.objects.create(user=instance)

@@ -14,15 +14,20 @@ def upload_image_path(instance,filename):
     new_file = random.randint(1, 39515623)        
     basename, ext = get_file_extension(filename)
     filename = "{new_file_name}{ext}".format(new_file_name=new_file,ext=ext)
+    
+    if instance.__class__.__name__ == 'PostExtraImage':
 
-    try:        
+        folder_name =  post_folder_name
+        return "{folder_name}/{username}/{new_filename}/{filename}".format(
+            folder_name=folder_name, username = instance.post.user, new_filename=new_file, filename=filename
+        )
+    
+    if instance.__class__.__name__ == "Post":        
+        folder_name = post_folder_name
+
+    elif instance.__class__.__name__ == "Profile":
         folder_name = profile_folder_name
-    except AttributeError:
-        try:
-            folder_name = post_folder_name
-        except AttributeError:
-            pass
-
+        
     return "{folder_name}/{username}/{new_filename}/{filename}".format(
         folder_name=folder_name, username = instance.user, new_filename=new_file, filename=filename
     )
